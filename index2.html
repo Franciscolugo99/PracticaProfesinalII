@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width =device-width , initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>App de Registro</title>
+</head>
+
+<body>
+    <div class="contains">
+        <h1>Registrar Usuario</h1>
+    </div>
+    
+    <form id="formulario">
+        <div class="contains">
+
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Nombre</span>
+            <input type="text" class="form-control" placeholder="Nombre" aria-label="Nombre"
+                aria-describedby="basic-addon1" id="nombre" name="nombre">
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Apellido</span>
+            <input type="text" class="form-control" placeholder="Apellido" aria-label="Apellido"
+                aria-describedby="basic-addon1" id="apellido" name="apellido">
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Edad</span>
+            <input type="text" class="form-control" placeholder="Edad" aria-label="edad" aria-describedby="basic-addon1"
+                id="apellido" name="apellido" type="number">
+        </div>
+        <div class="contains">
+            <h2>Selecione su Genero</h2>
+            <div>
+                <div class="input-group-text">
+                    <input class="form-check-input mt-0" id="sexo" type="radio" name="sexo" value="Masculino" > Masculino
+                </div>
+                <div class="input-group-text">
+                    <input class="form-check-input mt-0" id="sexo" type="radio" name="sexo" value="Femenino">
+                     Femenino
+                </div>
+                <div class="input-group-text">
+                    <input class="form-check-input mt-0" id="sexo" type="radio" name="sexo" value="Otro">
+                     Otro
+                </div>
+                <div>
+                    <button class="btn btn-primary" id="boton"> Añadir</button>
+                </div>
+            </div>
+
+    </form>
+
+
+    <h2>Usuarios Registrados</h2>
+    <div class="tableForma">
+        <table class="table table-dark" id="tablaid">
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Edad</th>
+                <th>Genero</th>
+                <th>Eliminar</th>
+            </tr>
+        </table>
+
+    </div>
+    <hr> <br>
+    <h2>Usuarios Masculinos </h2>
+    <button class="btn btn-primary" id="boton2" onclick='recuperarMas()'> Mostrar</button>
+    <div id='salida'></div>
+    <hr> <br>
+    <h2>Usuarios Femeninos </h2>
+    <button class="btn btn-primary" id="boton3" onclick='recuperarFem()'>Mostrar</button>
+    <div id='salida2'></div>
+    <hr> <br>
+    <h2> Orden Ascendente</h2>
+    <button class="btn btn-primary" id="boton4" onclick='listarTodoAsc()'>Mostrar</button>
+    <div id="salida3"></div>
+    <hr> <br>
+    <h2> Orden Descendente</h2>
+    <button class="btn btn-primary" id="boton4" onclick='listarTodoDES()'>Mostrar</button>
+    <div id="salida4"></div>
+    <hr> <br>
+    <h2>Buscador de Usuarios</h2>
+    <input id="Buscador">
+    <button class="btn btn-primary" id="Buscador2" onclick="BuscadorUser()"> Buscar</button>
+    <div id="salida5"></div>
+    <hr> <br>
+    <button class="btn btn-primary" onclick="listarTodo()">Mostrar Usuarios</button>
+    <div id="salida6"></div>
+    <br>
+    <h2>Selecione que Usuario desea modificar</h2>
+    <input id="OpcUser">
+    <br>
+    <br>
+    <h3>Ingrese el nuevo dato Nombre</h3>
+    <input type="text " id="datoNew">
+    <br>
+    <h3>Ingrese el nuevo dato Apellido</h3>
+    <input type="text " id="datoNew2">
+    <br>
+    <h3>Ingrese el nuevo dato Edad</h3>
+    <input type="text " id="datoNew3">
+    <br>
+    <h3>Ingrese el nuevo dato Sexo</h3>
+    <input type="text " id="datoNew4">
+    <br>
+
+    <br>
+    <button class="btn btn-primary" onclick="ModificarUser()">Modificar</button>
+    <br>
+    <hr> <br>
+    <button class="btn btn-primary" id="ElimiAll" onclick="ELiminarAll()">ELiminar TODO</button>
+
+
+
+
+    <script>
+        const form = document.getElementById("formulario");
+        form.addEventListener("submit", function (event) {
+            event.preventDefault(); //detiene el evento submit
+            let formularioForm = new FormData(form); //obtengo los datos del formulario
+            let TransactionObj = ConvertFormDataToTransactionObj(formularioForm)
+            saveTransactionObj(TransactionObj);
+            insertRowInformularioTablaRef(TransactionObj);
+            form.reset();
+        })
+        document.addEventListener("DOMContentLoaded", function (event) {
+            let transactionObjArr = JSON.parse(localStorage.getItem("TransactionData"))
+            transactionObjArr.forEach(
+                function (arrayElemnt) {
+                    insertRowInformularioTablaRef(arrayElemnt)
+                    console.log("Se inserta ")
+                });
+        })
+
+        function getnewformularioID() {
+            let lastFormularioID = localStorage.getItem("lastFormularioID") || "-1"
+            let newFormularioID = JSON.parse(lastFormularioID) + 1;
+            localStorage.setItem("lastFormularioID", JSON.stringify(newFormularioID))
+            return newFormularioID;
+        }
+
+        function ConvertFormDataToTransactionObj(formularioForm) {
+            let nombre = formularioForm.get("nombre");
+            let apellido = formularioForm.get("apellido");
+            let edad = formularioForm.get("edad");
+            let sexo = formularioForm.get("sexo");
+            let formularioID = getnewformularioID()
+            return {
+                "nombre": nombre,
+                "apellido": apellido,
+                "edad": edad,
+                "sexo": sexo,
+                "formularioID": formularioID,
+            }
+        }
+
+        function ConvertFormDataToTransactionObj2(formularioForm) {
+            let nombre = formularioForm.get("nombre");
+            let apellido = formularioForm.get("apellido");
+            let edad = formularioForm.get("edad");
+            let sexo = formularioForm.get("sexo");
+
+            return {
+                "nombre": nombre,
+                "apellido": apellido,
+                "edad": edad,
+                "sexo": sexo,
+                "formularioID": formularioID,
+            }
+        }
+
+        function insertRowInformularioTablaRef(TransactionObj) {
+            let formularioTablaRef = document.getElementById("tablaid"); //obtengo la referencia de la tabla
+
+            let newFormularioRowRef = formularioTablaRef.insertRow(-1); //agrego una nueva fila a la tabla
+            newFormularioRowRef.setAttribute("data-formulario-Id", TransactionObj["formularioID"])
+
+            let newFormularioCell = newFormularioRowRef.insertCell(
+                0); // agrego a la nueva fila una nueva celda en cada posicion 
+            newFormularioCell.textContent = TransactionObj["nombre"];
+
+            newFormularioCell = newFormularioRowRef.insertCell(1);
+            newFormularioCell.textContent = TransactionObj["apellido"];
+
+            newFormularioCell = newFormularioRowRef.insertCell(2);
+            newFormularioCell.textContent = TransactionObj["edad"]
+
+            newFormularioCell = newFormularioRowRef.insertCell(3);
+            newFormularioCell.textContent = TransactionObj["sexo"]
+
+            let newEliminarCell = newFormularioRowRef.insertCell(4);
+            let Eliminarbutton = document.createElement("button");
+            Eliminarbutton.textContent = "Eliminar";
+            newEliminarCell.appendChild(Eliminarbutton);
+
+            Eliminarbutton.addEventListener("click", (event) => {
+                let formularioRow = event.target.parentNode.parentNode;
+                //console.log(formularioRow);
+                event.target.parentNode.parentNode.remove();
+                daleteTransactionObj();
+            })
+        }
+
+        //le paso como parametro el id del formulario que quiero eliminar
+        function daleteTransactionObj(formularioID) {
+            //obtengo los usuarios de mi local sotorage (desconvierto de JSON a objeto)
+            let transactionObjArr = JSON.parse(localStorage.getItem("TransactionData"))
+            //busco el indice de el usuario que quiero elimiar 
+            let transactionIdexInArray = transactionObjArr.findIndex(element => element.formularioID ===
+                formularioID);
+            //eliminno el usuario  
+            transactionObjArr.splice(transactionIdexInArray, 1)
+            // convierto de objero a JSON
+            let myArrayJSON = JSON.stringify(transactionObjArr);
+            //guardo mi arreglo  en formato Json en local storage
+            localStorage.setItem("TransactionData", myArrayJSON);
+        }
+
+        function recuperarMas(TransactionObj) {
+            let transactionObjArr1 = JSON.parse(localStorage.getItem("TransactionData"))
+            let CantMasculino = transactionObjArr1.filter(element => element.sexo === "Masculino")
+            var CantMasc = CantMasculino.length;
+            event.preventDefault();
+            document.getElementById('salida').innerHTML = "<p>" + CantMasc + "</p>";
+            localStorage.setItem("CantMasculino", CantMasc);
+        }
+
+
+        function recuperarFem(TransactionObj) {
+            let transactionObjArr2 = JSON.parse(localStorage.getItem("TransactionData"))
+            let CantFemenino = transactionObjArr2.filter(element => element.sexo === "Femenino")
+            var CantFem = CantFemenino.length;
+            event.preventDefault()
+            document.getElementById('salida2').innerHTML = "<p>" + CantFem + "</p>";
+        }
+
+        function listarTodoAsc() {
+            let transactionObjArr3 = JSON.parse(localStorage.getItem("TransactionData"))
+            event.preventDefault()
+            // if(a < b){
+            //     return -1
+            // }
+            // if(a > b){
+            //     return 1
+            // }
+            // return 0;
+            transactionObjArr3.sort((a, b) => {
+                return a.edad - b.edad;
+            })
+            str = "";
+            for (var i = 0; i < transactionObjArr3.length; i++) {
+                str = str + "<p>" + i + " - " + transactionObjArr3[i].nombre + " - " + transactionObjArr3[i]
+                    .apellido + " - " + transactionObjArr3[i].edad + " - " + transactionObjArr3[i].sexo + "</p>"
+            }
+            document.getElementById("salida3").innerHTML = str;
+        }
+
+        function listarTodoDES() {
+            let transactionObjArr3 = JSON.parse(localStorage.getItem("TransactionData"))
+            event.preventDefault()
+            transactionObjArr3.sort((b, a) => {
+                return a.edad - b.edad;
+            })
+            str = "";
+            for (var i = 0; i < transactionObjArr3.length; i++) {
+                str = str + "<p>" + i + " - " + transactionObjArr3[i].nombre + " - " + transactionObjArr3[i]
+                    .apellido + " - " + transactionObjArr3[i].edad + " - " + transactionObjArr3[i].sexo + "</p>"
+            }
+            document.getElementById("salida4").innerHTML = str;
+        }
+
+        function listarTodo() {
+            let transactionObjArr3 = JSON.parse(localStorage.getItem("TransactionData"))
+            event.preventDefault()
+            str = "";
+            for (var i = 0; i < transactionObjArr3.length; i++) {
+                str = str + "<p>" + i + " - " + transactionObjArr3[i].nombre + " - " + transactionObjArr3[i]
+                    .apellido + " - " + transactionObjArr3[i].edad + " - " + transactionObjArr3[i].sexo + "</p>"
+            }
+            document.getElementById("salida6").innerHTML = str;
+        }
+
+        function BuscadorUser() {
+            event.preventDefault()
+            const User1 = document.getElementById("Buscador").value;
+            const transactionObjArr3 = JSON.parse(localStorage.getItem("TransactionData"))
+            const User = transactionObjArr3.find(element => {
+                return element.nombre == User1
+            })
+            /*             let User3 = JSON.stringify(User)
+                        alert(User3); */
+            document.getElementById('salida5').innerHTML = "<p>" + " Nombre: " + User.nombre + "<br>" + " Apellido: " +
+                User.apellido + "<br>" + " Edad: " + User.edad + "<br>" + " Sexo: " + User.sexo + "</p>";
+        }
+
+
+        function ModificarUser() {
+            let transactionObjArr = JSON.parse(localStorage.getItem("TransactionData"))
+            event.preventDefault()
+            let opcUser = document.getElementById('OpcUser').value;
+            let datoNew = document.getElementById('datoNew').value;
+            let datoNew2 = document.getElementById('datoNew2').value;
+            let datoNew3 = document.getElementById('datoNew3').value;
+            let datoNew4 = document.getElementById('datoNew4').value;
+
+            transactionObjArr[opcUser].nombre
+            const modi = transactionObjArr.splice(opcUser, 1, {
+                nombre: datoNew,
+                apellido: datoNew2,
+                edad: datoNew3,
+                sexo: datoNew4
+            })
+            console.log(modi);
+
+
+            transactionObjArr[opcUser].apellido
+            const modi2 = transactionObjArr.splice(opcUser, 1, {
+                nombre: datoNew,
+                apellido: datoNew2,
+                edad: datoNew3,
+                sexo: datoNew4
+            })
+            console.log(modi2);
+
+            transactionObjArr[opcUser].edad
+            const modi3 = transactionObjArr.splice(opcUser, 1, {
+                nombre: datoNew,
+                apellido: datoNew2,
+                edad: datoNew3,
+                sexo: datoNew4
+            })
+
+            transactionObjArr[opcUser].sexo
+            const modi4 = transactionObjArr.splice(opcUser, 1, {
+                nombre: datoNew,
+                apellido: datoNew2,
+                edad: datoNew3,
+                sexo: datoNew4
+            })
+
+            let myArrayJSON = JSON.stringify(transactionObjArr);
+            //guardo mi arreglo  en formato Json en local storage
+            localStorage.setItem("TransactionData", myArrayJSON);
+
+        }
+
+
+        function saveTransactionObj(TransactionObj) {
+            let myArray = JSON.parse(localStorage.getItem("TransactionData")) || [];
+            myArray.push(TransactionObj);
+            //coviero mi arreglo a json
+            let myArrayJSON = JSON.stringify(myArray);
+            //guardo mi arreglo  en formato Json en local storage
+            localStorage.setItem("TransactionData", myArrayJSON);
+
+        }
+
+        function ELiminarAll() {
+            event.preventDefault()
+            let transactionObjArr = JSON.parse(localStorage.getItem("TransactionData"))
+            let long = transactionObjArr.length;
+            transactionObjArr.splice(0);
+            let myArrayJSON = JSON.stringify(transactionObjArr);
+            //guardo mi arreglo  en formato Json en local storage
+            localStorage.setItem("TransactionData", myArrayJSON);
+            console.log(transactionObjArr);
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: rgb(121, 150, 150);
+        }
+        .input-group{
+            
+            width: 60%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    
+        .input-group-text input{
+            margin-right: 10px;
+        }
+        .input-group-text{
+            text-align: center;
+            width: 10%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        h1 {
+            text-align: center;
+
+        }
+
+        div {
+            text-align: center;
+            margin: 20px;
+            padding: 10px;
+
+        }
+
+        #salida5 {
+            color: rgb(0, 0, 0);
+        }
+
+        #boton {
+            font-size: 20px;
+            background-color: aqua;
+        }
+    </style>
+</body>
+
+</html>
