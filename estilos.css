@@ -1,0 +1,40 @@
+body {
+    background-color: rgb(121, 150, 150);
+}
+.input-group{
+    
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.input-group-text input{
+    margin-right: 10px;
+}
+.input-group-text{
+    text-align: center;
+    width: 10%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h1 {
+    text-align: center;
+
+}
+
+div {
+    text-align: center;
+    margin: 20px;
+    padding: 10px;
+
+}
+
+#salida5 {
+    color: rgb(0, 0, 0);
+}
+
+#boton {
+    font-size: 20px;
+    background-color: aqua;
+}
